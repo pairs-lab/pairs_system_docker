@@ -1,10 +1,8 @@
 # pairs_system — Docker image
 
-The whole **PAIRS UAV system** (CTU-MRS port) on ROS Noetic, in one image — the
-PAIRS analogue of [`xurobotics/slide-slam`](https://hub.docker.com/r/xurobotics/slide-slam).
+The whole **PAIRS UAV system** (CTU-MRS port) on ROS Noetic.
 
-Unlike slide-slam, which mounts its source and runs `catkin build` inside the
-container, this image **`apt install`s** the system from the signed PAIRS apt
+This image **`apt install`s** the system from the signed PAIRS apt
 repo, so the container is ready to run with no build step. Your own packages go
 in a mounted overlay workspace.
 
