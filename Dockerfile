@@ -49,6 +49,14 @@ RUN echo "apt content build ${CACHEBUST}" && \
       ros-noetic-pairs-uav-system-full \
  && rm -rf /var/lib/apt/lists/*
 
+# mavros needs the GeographicLib geoid dataset (egm96-5) to convert between
+# ellipsoid and AMSL altitudes. Without it the mavros node dies on startup
+# ("FATAL: File not readable .../geoids/egm96-5.pgm") and, with no MAVLink
+# bridge, the PX4 API can't arm or switch to offboard.
+RUN apt-get update && apt-get install -y --no-install-recommends geographiclib-tools wget \
+ && geographiclib-get-geoids egm96-5 \
+ && rm -rf /var/lib/apt/lists/*
+
 # shell helpers (waitForRos / waitForControl / waitForHw / ...) used by the
 # tmux session scripts' pane commands
 COPY pairs_shell_additions.sh /opt/pairs/shell_additions.sh
