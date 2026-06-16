@@ -12,6 +12,11 @@ LABEL org.opencontainers.image.description="PAIRS UAV system (CTU-MRS port) on R
 LABEL maintainer="Thanh Nguyen Canh <canhthanh@vnu.edu.vn>"
 
 ENV DEBIAN_FRONTEND=noninteractive
+# silence the GUI end-of-life popups in the simulation tools:
+#   DISABLE_ROS1_EOL_WARNINGS   -> rviz's "ROS 1 End-of-Life" dialog (suppressed when merely defined)
+#   GAZEBO_SUPPRESS_EOL_WARNING -> gzclient's EOL banner (needs exactly "1"; gazebo >= 11.15.0)
+ENV DISABLE_ROS1_EOL_WARNINGS=1
+ENV GAZEBO_SUPPRESS_EOL_WARNING=1
 SHELL ["/bin/bash", "-c"]
 
 # Where to get PAIRS packages from. Defaults to the public signed repo; build.sh
