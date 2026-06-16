@@ -44,6 +44,17 @@ waitForGazebo() {
   _pairs_wait_topic "/gazebo/model_states"
 }
 
+# block until the drone spawner has advertised its /spawn service. The spawner
+# node comes up a moment AFTER Gazebo itself, so spawn panes must wait for the
+# service — not just for Gazebo — or the rosservice call races ahead and fails
+# with "Service [/pairs_drone_spawner/spawn] is not available".
+waitForSpawn() {
+  waitForRos
+  until rosservice info /pairs_drone_spawner/spawn > /dev/null 2>&1; do
+    sleep 1
+  done
+}
+
 # block until the hardware API (px4/mavros bridge) is publishing status
 waitForHw() {
   waitForRos
@@ -79,5 +90,5 @@ waitForOffboard() {
 # export so the helpers survive `exec` (entrypoint) and are available in
 # login shells, non-interactive `bash -c`, and inherited tmux panes alike
 export -f _pairs_wait_topic waitForRos waitForRosMaster waitForTime \
-          waitForGazebo waitForHw waitForHardware waitForOdometry \
+          waitForGazebo waitForSpawn waitForHw waitForHardware waitForOdometry \
           waitForControl waitForOffboard
