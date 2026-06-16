@@ -40,8 +40,12 @@ RUN set -e; \
     fi
 
 # install the FULL PAIRS UAV system (gazebo sim + all SLAM cores + control +
-# estimation + drivers — the complete ~170-package closure)
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# estimation + drivers — the complete ~170-package closure).
+# CACHEBUST (a changing value) forces this layer to re-run when the apt repo
+# content changes even though the command text is identical.
+ARG CACHEBUST=0
+RUN echo "apt content build ${CACHEBUST}" && \
+    apt-get update && apt-get install -y --no-install-recommends \
       ros-noetic-pairs-uav-system-full \
  && rm -rf /var/lib/apt/lists/*
 

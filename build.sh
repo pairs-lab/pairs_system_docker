@@ -17,9 +17,11 @@ APT_DOCS="${APT_DOCS:-$HOME/vin_dron_ws/pairs-apt/docs}"
 
 cd "$(dirname "$0")"
 
+CACHEBUST="$(date +%s)"   # force the apt-install layer to re-run when repo content changed
+
 if [ "$SOURCE" = "live" ]; then
   echo ">> building against the published repo https://thanhnguyencanh.github.io/apt"
-  docker build -t "${IMAGE}:${TAG}" -t "${IMAGE}:latest" .
+  docker build --build-arg CACHEBUST="$CACHEBUST" -t "${IMAGE}:${TAG}" -t "${IMAGE}:latest" .
 else
   # serve the local pairs-apt/docs over a throwaway docker network so the build
   # can apt-install from it without depending on the GitHub Pages push
@@ -43,6 +45,7 @@ else
   docker build --network host \
     --build-arg PAIRS_APT_BASE="http://127.0.0.1:${PORT}" \
     --build-arg PAIRS_APT_TRUSTED=1 \
+    --build-arg CACHEBUST="$CACHEBUST" \
     -t "${IMAGE}:${TAG}" -t "${IMAGE}:latest" .
 fi
 
